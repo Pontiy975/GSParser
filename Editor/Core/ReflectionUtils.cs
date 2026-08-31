@@ -11,15 +11,28 @@ namespace GSParser.Editor.Core
     public static class ReflectionUtils
     {
         private const BindingFlags FieldFlags =
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+
+        private static IEnumerable<FieldInfo> GetAllFields(Type type)
+        {
+            var seen = new HashSet<string>();
+            for (var t = type; t != null && t != typeof(object); t = t.BaseType)
+            {
+                foreach (var f in t.GetFields(FieldFlags))
+                {
+                    if (seen.Add(f.Name))
+                        yield return f;
+                }
+            }
+        }
 
         public static Type[] GetParsableTypes()
         {
             return TypeCache.GetTypesDerivedFrom<ScriptableObject>()
-                .Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition)
+                .Where(t => !t.IsGenericTypeDefinition)
                 .Where(t =>
                     typeof(IGoogleSheetSerializable).IsAssignableFrom(t) ||
-                    t.GetFields(FieldFlags).Any(f => f.GetCustomAttribute<ParseAttribute>() != null))
+                    GetAllFields(t).Any(f => f.GetCustomAttribute<ParseAttribute>() != null))
                 .OrderBy(t => t.Name)
                 .ToArray();
         }
@@ -38,21 +51,20 @@ namespace GSParser.Editor.Core
 
         public static FieldInfo[] GetParseFields(Type type)
         {
-            return type.GetFields(FieldFlags)
+            return GetAllFields(type)
                 .Where(f => f.GetCustomAttribute<ParseAttribute>() != null)
                 .ToArray();
         }
 
         public static FieldInfo GetPrimaryKeyField(Type type)
         {
-            return type.GetFields(FieldFlags)
+            return GetAllFields(type)
                 .FirstOrDefault(f => f.GetCustomAttribute<PrimaryKeyAttribute>() != null);
         }
 
-        // Returns fields with [ParseDefault] attribute
         public static (FieldInfo field, DefaultRefAttribute attr)[] GetDefaultFields(Type type)
         {
-            return type.GetFields(FieldFlags)
+            return GetAllFields(type)
                 .Select(f => (field: f, attr: f.GetCustomAttribute<DefaultRefAttribute>()))
                 .Where(x => x.attr != null)
                 .ToArray();
@@ -60,7 +72,7 @@ namespace GSParser.Editor.Core
 
         public static FieldInfo FindField(Type type, string name)
         {
-            return type.GetField(name, FieldFlags);
+            return GetAllFields(type).FirstOrDefault(f => f.Name == name);
         }
 
         public static object ConvertPrimitive(string raw, Type fieldType)

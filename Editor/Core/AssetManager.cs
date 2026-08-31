@@ -28,18 +28,24 @@ namespace GSParser.Editor.Core
                 throw new InvalidOperationException(
                     $"{targetType.Name} has no [Parse] fields and does not implement IGoogleSheetSerializable.");
 
+            if (targetType.IsAbstract && primaryKey == null)
+                throw new InvalidOperationException(
+                    $"{targetType.Name} is abstract and has no [PrimaryKey] field — cannot match sheet rows to existing assets of the correct concrete type.");
+
             if (!AssetDatabase.IsValidFolder(savePath))
                 CreateFolderRecursive(savePath);
 
+            // Unity's "t:TypeName" filter matches derived types too, so this already returns
+            // assets of every concrete subtype when targetType is an abstract base class.
             var existing = LoadExisting(targetType, savePath);
             var headers = data.Headers;
             var processed = 0;
+            var skipped = 0;
 
             foreach (var row in data.Rows)
             {
                 var rowMap = BuildMap(headers, row);
 
-                // Find or create asset
                 ScriptableObject asset = null;
                 bool isNew = false;
 
@@ -51,8 +57,18 @@ namespace GSParser.Editor.Core
                         !string.IsNullOrWhiteSpace(keyValue))
                     {
                         asset = FindByKey(existing, primaryKey, keyValue);
+
                         if (asset == null)
                         {
+                            if (targetType.IsAbstract)
+                            {
+                                // Can't guess which concrete subtype a brand-new row belongs to.
+                                // Create the asset manually once (correct concrete type), then re-run to populate it.
+                                Debug.LogWarning($"[GSParser] \"{keyValue}\": no existing {targetType.Name} asset found — skipped.");
+                                skipped++;
+                                continue;
+                            }
+
                             asset = ScriptableObject.CreateInstance(targetType);
                             isNew = true;
                         }
@@ -65,11 +81,9 @@ namespace GSParser.Editor.Core
                     isNew = true;
                 }
 
-                // [ParseDefault] — apply only on new assets
                 if (isNew)
                     ApplyDefaults(asset, defaultFields);
 
-                // [Parse] fields
                 foreach (var field in parseFields)
                 {
                     var attr = field.GetCustomAttribute<ParseAttribute>();
@@ -83,18 +97,16 @@ namespace GSParser.Editor.Core
                     }
                     catch (Exception e)
                     {
-                        Debug.LogWarning($"[GSParser] {targetType.Name}.{field.Name} <- \"{raw}\": {e.Message}");
+                        Debug.LogWarning($"[GSParser] {asset.GetType().Name}.{field.Name} <- \"{raw}\": {e.Message}");
                     }
                 }
 
-                // IGoogleSheetSerializable.ParseData for complex fields
                 if (isSerializable)
                     ((IGoogleSheetSerializable)asset).ParseData(rowMap);
 
                 if (isNew)
                 {
                     var fileName = ResolveFileName(assetNameColumn, primaryKey, asset, rowMap);
-
                     var assetPath = AssetDatabase.GenerateUniqueAssetPath(
                         Path.Combine(savePath, $"{fileName}.asset"));
                     AssetDatabase.CreateAsset(asset, assetPath);
@@ -104,6 +116,9 @@ namespace GSParser.Editor.Core
                 EditorUtility.SetDirty(asset);
                 processed++;
             }
+
+            if (skipped > 0)
+                Debug.LogWarning($"[GSParser] {skipped} row(s) skipped for abstract target \"{targetType.Name}\" — no matching existing asset.");
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -187,7 +202,9 @@ namespace GSParser.Editor.Core
 
         private static ScriptableObject FindByKey(List<ScriptableObject> assets, FieldInfo keyField, string key)
         {
-            return assets.FirstOrDefault(a => keyField.GetValue(a)?.ToString() == key);
+            var trimmed = key.Trim();
+            return assets.FirstOrDefault(a =>
+                string.Equals(keyField.GetValue(a)?.ToString()?.Trim(), trimmed, StringComparison.OrdinalIgnoreCase));
         }
 
         private static Dictionary<string, string> BuildMap(List<string> headers, List<string> row)
