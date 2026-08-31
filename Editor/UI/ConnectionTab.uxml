@@ -1,0 +1,67 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="ConnectionTab" class="tab-root">
+
+        <!-- ═══ Connection selector ══════════════════════════════════════════ -->
+        <ui:VisualElement class="section">
+            <ui:Label text="Sheet Connection" class="section-title" />
+
+            <ui:VisualElement class="row">
+                <ui:DropdownField name="connection-dropdown" class="flex-grow" />
+                <ui:Button name="add-connection-button"    text="+"  class="btn-icon" tooltip="Add connection" />
+                <ui:Button name="remove-connection-button" text="−"  class="btn-icon btn-danger" tooltip="Remove connection" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ═══ Credentials ══════════════════════════════════════════════════ -->
+        <ui:VisualElement class="section">
+            <ui:Label text="Credentials" class="section-title" />
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Name" class="field-label" />
+                <ui:TextField name="conn-label" class="flex-grow" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="API Key" class="field-label" />
+                <ui:TextField name="api-key" password="true" class="flex-grow" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Spreadsheet ID" class="field-label" />
+                <ui:TextField name="spreadsheet-id" class="flex-grow" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ═══ Range ════════════════════════════════════════════════════════ -->
+        <ui:VisualElement class="section">
+            <ui:Label text="Range" class="section-title" />
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Sheet Name" class="field-label" />
+                <ui:TextField name="sheet-name" class="flex-grow" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Range" class="field-label" />
+                <ui:TextField name="range-start" class="range-field" />
+                <ui:Label text=":" class="range-sep" />
+                <ui:TextField name="range-end" class="range-field" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ═══ Warning ══════════════════════════════════════════════════════ -->
+        <ui:Label name="warning-label" class="warning-label"
+                  style="display: none;" />
+
+        <!-- ═══ Actions ══════════════════════════════════════════════════════ -->
+        <ui:VisualElement class="section actions-row">
+            <ui:Button name="load-button"        text="Load"       class="btn-primary" />
+            <ui:Button name="reconnect-button"   text="Reconnect"  class="btn-secondary" />
+            <ui:Button name="disconnect-button"  text="Disconnect" class="btn-secondary btn-danger" />
+        </ui:VisualElement>
+
+        <!-- ═══ Status ═══════════════════════════════════════════════════════ -->
+        <ui:Label name="status-label" text="○ Not connected" class="status-label status--idle" />
+
+    </ui:VisualElement>
+</ui:UXML>

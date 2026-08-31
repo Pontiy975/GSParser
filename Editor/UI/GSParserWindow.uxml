@@ -1,0 +1,67 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.pontiy.gsparser/Editor/UI/GSParser.uss?fileID=7433441132597879392&amp;guid=60e4f8467ecfad04c9170c342478d566&amp;type=3#GSParser"/>
+    <ui:VisualElement name="gs-root" style="flex-grow: 1;">
+        <ui:VisualElement name="tab-bar">
+            <ui:Button name="btn-tab-connection" text="Connection" class="tab-btn tab-btn--active"/>
+            <ui:Button name="btn-tab-viewer" text="Sheet Viewer" class="tab-btn"/>
+            <ui:Button name="btn-tab-parser" text="Parser" class="tab-btn"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="ConnectionTab" style="flex-grow: 1; padding: 12px; display: flex;">
+            <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 10px;">
+                <ui:DropdownField name="conn-dropdown" label="" style="flex-grow: 1; margin-right: 4px;"/>
+                <ui:Button name="conn-add" text="+" tooltip="Add connection" class="btn-icon"/>
+                <ui:Button name="conn-remove" text="-" tooltip="Remove connection" class="btn-icon btn-danger" style="margin-left: 2px;"/>
+            </ui:VisualElement>
+            <ui:Label text="CREDENTIALS" class="section-title"/>
+            <ui:TextField name="conn-label" label="Name"/>
+            <ui:TextField name="conn-apikey" label="API Key" password="true"/>
+            <ui:TextField name="conn-sheetid" label="Spreadsheet ID"/>
+            <ui:Label text="RANGE" class="section-title" style="margin-top: 8px;"/>
+            <ui:TextField name="conn-sheet" label="Sheet Name"/>
+            <ui:VisualElement style="flex-direction: row; align-items: center;">
+                <ui:TextField name="conn-range-start" label="Range" style="flex-grow: 1;"/>
+                <ui:Label text=":" style="margin: 0 6px; color: rgb(102, 102, 102);"/>
+                <ui:TextField name="conn-range-end" style="flex-grow: 1; margin-top: 0;"/>
+            </ui:VisualElement>
+            <ui:Label name="conn-warning" style="display: none;"/>
+            <ui:VisualElement style="flex-direction: row; margin-top: 14px;">
+                <ui:Button name="conn-load" text="Load" class="btn-primary" style="flex-grow: 1; margin-right: 4px;"/>
+                <ui:Button name="conn-reconnect" text="Reconnect" class="btn-secondary" style="flex-grow: 1; margin-right: 4px;"/>
+                <ui:Button name="conn-disconnect" text="Disconnect" class="btn-secondary btn-danger" style="flex-grow: 1;"/>
+            </ui:VisualElement>
+            <ui:Label name="conn-status" text="○  Not connected" class="status--idle"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="ViewerTab" style="flex-grow: 1; display: none; flex-direction: column;">
+            <ui:VisualElement name="viewer-toolbar">
+                <ui:Label name="viewer-info" text=""/>
+                <ui:Button name="viewer-refresh" text="Refresh" class="btn-secondary" style="width: 70px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="viewer-table-container" style="flex-grow: 1;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="ParserTab" style="flex-grow: 1; padding: 12px; display: none;">
+            <ui:Label text="PRESET" class="section-title"/>
+            <ui:VisualElement style="flex-direction: row; align-items: center;">
+                <ui:DropdownField name="parser-preset-select" style="flex-grow: 1; margin-right: 4px;"/>
+                <ui:Button name="parser-preset-add" text="+" tooltip="Add preset" class="btn-icon"/>
+                <ui:Button name="parser-preset-remove" text="−" tooltip="Remove preset" class="btn-icon btn-danger" style="margin-left: 2px;"/>
+            </ui:VisualElement>
+            <ui:TextField name="parser-preset-label" label="Preset Name" style="margin-top: 4px;"/>
+            <ui:Label text="TARGET" class="section-title" style="margin-top: 10px;"/>
+            <ui:DropdownField name="parser-target-type" label="Target Type"/>
+            <ui:Label text="OUTPUT" class="section-title" style="margin-top: 10px;"/>
+            <ui:VisualElement style="flex-direction: row; align-items: center;">
+                <ui:Label text="Save Path" style="min-width: 110px; color: rgb(153, 153, 153); font-size: 11px;"/>
+                <ui:Label name="parser-save-path-label" text="Assets/Data" style="flex-grow: 1; color: rgb(204, 204, 204); font-size: 11px; overflow: hidden; white-space: nowrap; background-color: rgb(42, 42, 42); border-color: rgb(58, 58, 58); border-width: 1px; border-radius: 3px; padding: 3px 6px;"/>
+                <ui:Button name="parser-browse-path" text="…" tooltip="Select folder" class="btn-icon" style="margin-left: 4px;"/>
+            </ui:VisualElement>
+            <ui:Label name="parser-warning" style="display: none;"/>
+            <ui:Button name="parser-parse" text="Generate / Update Assets" class="btn-primary" style="margin-top: 16px; height: 30px;"/>
+            <ui:Label name="parser-status" text="○  No data loaded" class="status--idle" style="margin-top: 8px;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="LogTab" style="flex-grow: 1; display: none;">
+            <ui:ScrollView name="log-scroll" style="flex-grow: 1;">
+                <ui:Label name="log-content"/>
+            </ui:ScrollView>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

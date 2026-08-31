@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd">
+
+    <engine:VisualElement name="ParserTab" style="flex-grow: 1; padding: 12px; display: none;">
+
+        <engine:Label text="PRESET" class="section-title" />
+        <engine:VisualElement style="flex-direction: row; align-items: center;">
+            <engine:DropdownField name="parser-preset-select" style="flex-grow: 1; margin-right: 4px;" />
+            <engine:Button name="parser-preset-add"    text="+" class="btn-icon" tooltip="Add preset" />
+            <engine:Button name="parser-preset-remove" text="−" class="btn-icon btn-danger" tooltip="Remove preset" style="margin-left: 2px;" />
+        </engine:VisualElement>
+        <engine:TextField name="parser-preset-label" label="Preset Name" style="margin-top: 4px;" />
+
+        <engine:Label text="TARGET" class="section-title" style="margin-top: 10px;" />
+        <engine:DropdownField name="parser-target-type" label="Target Type" />
+
+        <engine:Label text="OUTPUT" class="section-title" style="margin-top: 10px;" />
+        <engine:VisualElement style="flex-direction: row; align-items: center;">
+            <engine:Label text="Save Path" style="min-width: 110px; color: #999; font-size: 11px;" />
+            <engine:Label name="parser-save-path-label" text="Assets/Data"
+                style="flex-grow: 1; color: #ccc; font-size: 11px; overflow: hidden;
+                       -unity-text-overflow-position: start; white-space: nowrap;
+                       background-color: #2a2a2a; border-color: #3a3a3a; border-width: 1px;
+                       border-radius: 3px; padding: 3px 6px;" />
+            <engine:Button name="parser-browse-path" text="…" class="btn-icon" tooltip="Select folder" style="margin-left: 4px;" />
+        </engine:VisualElement>
+
+        <engine:Label name="parser-warning" class="warning-box" style="display: none;" />
+
+        <engine:Button name="parser-parse" text="Generate / Update Assets" class="btn-primary" style="margin-top: 16px; height: 30px;" />
+
+        <engine:Label name="parser-status" text="○  No data loaded" class="status--idle" style="margin-top: 8px;" />
+
+    </engine:VisualElement>
+
+</engine:UXML>
