@@ -1,6 +1,6 @@
 using System;
 
-namespace GSParser.Editor.Core
+namespace GSParser
 {
     /// <summary>
     /// Maps a field to a Google Sheet column.

@@ -1,7 +1,7 @@
 {
   "name": "com.pontiy.gsparser",
-  "version": "1.0.1",
-  "displayName": "Google Sheets Parser",
+  "version": "1.0.2",
+  "displayName": "GSParser",
   "unity": "2022.3",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1"
